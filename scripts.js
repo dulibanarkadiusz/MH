@@ -199,3 +199,59 @@ $(function(){
 	GenerateNet(cnv);
 	DrawNet(cnv);	
 })
+
+
+// ======== pathfinding ===========
+
+//	Returns an array consiting of neighbors in a cross-shape
+function getNeighbours(i)
+{
+	var array=[];
+
+	if(i%boxPerRow!=0)
+	{
+		array.push(i-1);
+	}
+	if(i%boxPerRow!=boxPerRow-1)
+	{
+		array.push(i+1);
+	}
+	if(i-boxPerRow>0)
+	{
+		array.push(i-boxPerRow);
+	}
+	if(i+boxPerRow<boxPerRow*rowsCount)
+	{
+		array.push(i+boxPerRow);
+	}
+	return array;
+}
+
+function BFS_search(start,end)
+{
+	var frontier = [start];
+	var visited = [start];
+	var bool = false;
+	while(frontier.length>0 && bool==false)
+	{
+		var obj = frontier.pop();
+		var list = getNeighbours(obj);
+		list.forEach(function(el)
+		{
+			if(el==end)
+			{
+				DrawNet(canvas);
+				bool=true;
+				return el;
+			}	
+			else if(!visited.includes(el))
+			{
+				visited.push(el);
+				frontier.unshift(el);
+				net[el].type=2;
+			}
+		})
+	}
+	DrawNet(canvas);
+	return list;
+}
