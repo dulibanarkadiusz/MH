@@ -5,6 +5,10 @@ const boxType = {
 	END : 2,
 	OBSTACLE : 3
 };
+const mousemoveType = {
+	ERASING : 0,
+	DRAWING : 1
+}
 const boxPerRow = 10; 
 const rowsCount = 10;
 
@@ -15,10 +19,17 @@ var drawingByMoveActivated = false;
 var lastRenderSquare = null;
 var squareTypeToSet = boxType.START;
 var lastRenderPoint = {};
+var mousemoveMode = mousemoveType.DRAWING;
 function Init(canvas){
 	ClearCanvas(canvas);
 	ResetLastRenderSquare();
 }
+
+
+//	Used to determine if starting point and end point was placed
+//	in order to place regular blocks
+var startPlaced 	= false;
+var endPlaced		= false;
 
 function GenerateNet(canvas){
 	squareSize = Math.floor(Math.min((canvas.width/boxPerRow), (canvas.height/rowsCount)));
@@ -59,6 +70,10 @@ function DrawNet(canvas){
   	}
 }
 
+function IsMouseMoveAcceptable(mouseAction){
+	return (mouseAction != "mousemove" || (drawingByMoveActivated && startPlaced && endPlaced));
+}
+
 function DrawSquare(squareObj, canvas){
 	var ctx = canvas.getContext('2d');
 
@@ -89,23 +104,76 @@ function GetSquareByCord(x, y){
 	return net[posInList];
 }
 
+function SetPenOrRubber(square){
+	if (square.type > boxType.NORMAL){
+		mousemoveMode = mousemoveType.ERASING;
+	}
+	else{
+		mousemoveMode = mousemoveType.DRAWING;
+	}
+}
+
 function ChangeSquareType(square) {
-	square.type = squareTypeToSet;
-	if (squareTypeToSet <= 2)
-		squareTypeToSet++;
+	// square.type = squareTypeToSet;
+	// if (squareTypeToSet <= 2)
+	// 	squareTypeToSet++;
+
+
+	//	Set of rules that allow to put box of each type
+	//	depending on what boxes have already been put
+
+	//	If box is normal then set:
+	//		start if hasn't been placed already
+	//		end if hasn't been placed already
+	//		obstacle
+
+	if(square.type==boxType.NORMAL && (mousemoveMode == mousemoveType.DRAWING))
+	{
+		if(!startPlaced)
+		{
+			square.type = boxType.START;
+			startPlaced=true;
+		}
+		else if(!endPlaced)
+		{
+			square.type = boxType.END;
+			endPlaced=true;
+		}
+		else
+		{
+			square.type = boxType.OBSTACLE;
+		}
+	}
+	
+	//	Actions when clicking on a block	
+	else if (mousemoveMode == mousemoveType.ERASING)
+	{
+
+		if(square.type == boxType.START)
+		{
+			startPlaced = false;
+		}
+		else if(square.type == boxType.END)
+		{
+			endPlaced = false;
+		}
+		square.type=boxType.NORMAL;
+	}
 }
 
 
 
 // ======== interakcje ===========
 $("canvas").on('click mousemove', function(e){
-	if (e.type == "mousemove" && !drawingByMoveActivated)
-		return; 
+	if (!IsMouseMoveAcceptable(e.type)){
+		return;	// drawing by mousemove is not allowed 
+	}
 
 	var x = e.offsetX;
 	var y = e.offsetY;
 	var square = GetSquareByCord(x, y);
-	if (lastRenderSquare != square) {
+
+	if (lastRenderSquare != square) { // dont color the same square twice
 		ChangeSquareType(square);
 		DrawNet(cnv);
 
@@ -115,6 +183,9 @@ $("canvas").on('click mousemove', function(e){
 
 $("canvas").on('mousedown', function(e){
 	drawingByMoveActivated = true;
+
+	var square = GetSquareByCord(e.offsetX, e.offsetY);
+	SetPenOrRubber(square);
 	ResetLastRenderSquare();
 })
 
