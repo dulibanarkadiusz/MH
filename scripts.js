@@ -3,7 +3,8 @@ const boxType = {
 	NORMAL : 0,
 	START : 1,
 	END : 2,
-	OBSTACLE : 3
+	OBSTACLE : 3,
+	PATH : 9
 };
 const mousemoveType = {
 	ERASING : 0,
@@ -84,17 +85,20 @@ function DrawSquare(squareObj, canvas){
 
 	switch (squareObj.type){
 		case boxType.NORMAL:
-			ctx.fillStyle = "black";
+			ctx.fillStyle = "DimGrey";
 			ctx.strokeRect(squareObj.x, squareObj.y, squareSize, squareSize);
 			return;
 		case boxType.START:
-			ctx.fillStyle = "green";
+			ctx.fillStyle = "DarkSeaGreen";
 			break;
 		case boxType.END:
-			ctx.fillStyle = "red";
+			ctx.fillStyle = "LightCoral";
 			break;
 		case boxType.OBSTACLE:
-			ctx.fillStyle = "gray"
+			ctx.fillStyle = "SlateGrey";
+			break;
+		case boxType.PATH:
+			ctx.fillStyle = "Linen";
 			break;
 	}
 
@@ -116,6 +120,26 @@ function SetPenOrRubber(square){
 	else{
 		mousemoveMode = mousemoveType.DRAWING;
 	}
+}
+
+function ClearPath(){
+	net.forEach(function(sq){
+		if (sq.type == boxType.PATH){
+			sq.type == boxType.NORMAL;
+		}
+	});
+}
+
+function SetPath(indexesList){
+	indexesList.forEach(
+		function(index){
+			try{
+				net[index].type = boxType.PATH;
+			}
+			catch(ex){
+				console.log("SetPath() exception: " + ex.message);
+			}
+		});
 }
 
 function ChangeSquareType(square) {
@@ -184,6 +208,9 @@ $("canvas").on('click mousemove', function(e){
 
 		lastRenderSquare = square;
 	}
+
+
+	SetPath([1, 95, 4, 5, 99]);
 });
 
 $("canvas").on('mousedown', function(e){
