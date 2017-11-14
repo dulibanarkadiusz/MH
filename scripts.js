@@ -234,6 +234,34 @@ $(function(){
 // ======== pathfinding ===========
 
 //	Returns an array consiting of neighbors in a cross-shape
+function isOutOfRange(int)
+{
+	if(int<0 || int>boxPerRow*rowsCount)
+		return true;
+	return false;
+}
+
+// function getNeighbours(i)
+// {
+// 	var array=[];
+// 	if(i%boxPerRow!=0 && checkIfNotOccupied(i-1))
+// 	{
+// 		array.push(new node(i-1));
+// 	}
+// 	else if(i%boxPerRow!=boxPerRow-1 && checkIfNotOccupied(i+1) )
+// 	{
+// 		array.push(new node(i+1));
+// 	}
+// 	else if(i-boxPerRow>0 && checkIfNotOccupied(i-boxPerRow))
+// 	{
+// 		array.push(new node(i-boxPerRow));
+// 	}
+// 	else if(i+boxPerRow<boxPerRow*rowsCount && checkIfNotOccupied(i+boxPerRow))
+// 	{
+// 		array.push(new node(i+boxPerRow));
+// 	}
+// 	return array;
+// }
 function getNeighbours(i)
 {
 	var array=[];
@@ -264,9 +292,12 @@ function getNeighbours(i)
 //	Checks if "i" in "net" is occupied by an obstacle
 function checkIfNotOccupied(i)
 {
-	if(net[i].type != boxType.OBSTACLE)
+	if(!isOutOfRange(i))
 	{
-		return true;
+		if(net[i].type != boxType.OBSTACLE)
+		{
+			return true;
+		}
 	}
 	return false;
 }
@@ -284,6 +315,18 @@ function includesNode(array,node)
 		}
 	}
 	return false;
+}
+
+function nodeToList(node)
+{
+    var tmp = node;
+    var list = [];
+    while (tmp)
+    {
+        list.push(tmp.id);
+        tmp = tmp.last;
+    }
+    return list;
 }
 
 
@@ -309,15 +352,10 @@ function BFS_search(start,end)
 			if(el.id==end)
 			{
 				bool=true;
-				tmp=el;
-				while(tmp.last)
-				{
-					tmp=tmp.last;
-				}
 				fin = el;
+				console.log(fin);
 				return el;
 			}	
-			// else if(!visited.includes(el))
 			else if(!includesNode(visited,el))
 			{
 				visited.push(el);
@@ -325,5 +363,5 @@ function BFS_search(start,end)
 			}
 		})
 	}
-	return fin;
+	return nodeToList(fin);
 }
