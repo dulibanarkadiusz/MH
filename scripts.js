@@ -209,8 +209,6 @@ $("canvas").on('click mousemove', function(e){
 		lastRenderSquare = square;
 	}
 
-
-	SetPath([1, 95, 4, 5, 99]);
 });
 
 $("canvas").on('mousedown', function(e){
