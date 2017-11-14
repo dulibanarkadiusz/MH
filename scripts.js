@@ -26,6 +26,11 @@ function Init(canvas){
 }
 
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! do poprawy
+var node = class{
+	constructor(id){this.id=id}
+}
+
 //	Used to determine if starting point and end point was placed
 //	in order to place regular blocks
 var startPlaced 	= false;
@@ -210,48 +215,90 @@ function getNeighbours(i)
 
 	if(i%boxPerRow!=0)
 	{
-		array.push(i-1);
+		if(checkIfNotOccupied(i-1))
+		array.push(new node(i-1));
 	}
 	if(i%boxPerRow!=boxPerRow-1)
 	{
-		array.push(i+1);
+		if(checkIfNotOccupied(i+1))
+		array.push(new node(i+1));
 	}
 	if(i-boxPerRow>0)
 	{
-		array.push(i-boxPerRow);
+		if(checkIfNotOccupied(i-boxPerRow))
+		array.push(new node(i-boxPerRow));
 	}
 	if(i+boxPerRow<boxPerRow*rowsCount)
 	{
-		array.push(i+boxPerRow);
+		if(checkIfNotOccupied(i+boxPerRow))
+		array.push(new node(i+boxPerRow));
 	}
 	return array;
 }
 
+//	Checks if "i" in "net" is occupied by an obstacle
+function checkIfNotOccupied(i)
+{
+	if(net[i].type != boxType.OBSTACLE)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+//	Checks if node with an id doesn't repeat itself inside
+//	an array
+function includesNode(array,node)
+{
+	for(var i=0;i<array.length;i++)
+	{
+		if(array[i].id==node.id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+//	BFS_Search
+//		frontier	- stack where all nodes that should be taken 
+//					  care of in the future
+//		visited		- already visited nodes
+//		fin			- POPRAWIC
 function BFS_search(start,end)
 {
-	var frontier = [start];
-	var visited = [start];
+	var frontier = [new node(start)];
+	var visited = [new node(start)];
 	var bool = false;
+	var fin;
+
 	while(frontier.length>0 && bool==false)
 	{
-		var obj = frontier.pop();
-		var list = getNeighbours(obj);
+		var obj 	= frontier.pop();
+		var list 	= getNeighbours(obj.id);
 		list.forEach(function(el)
 		{
-			if(el==end)
+			el.last=obj;
+			if(el.id==end)
 			{
-				DrawNet(canvas);
 				bool=true;
+				tmp=el;
+				while(tmp.last)
+				{
+					tmp=tmp.last;
+				}
+				fin = el;
 				return el;
 			}	
-			else if(!visited.includes(el))
+			// else if(!visited.includes(el))
+			else if(!includesNode(visited,el))
 			{
 				visited.push(el);
 				frontier.unshift(el);
-				net[el].type=2;
 			}
 		})
 	}
-	DrawNet(canvas);
-	return list;
+	return fin;
 }
