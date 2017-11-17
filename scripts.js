@@ -15,16 +15,36 @@ const rowsCount = 10;
 
 ///////////////////////////////////////////////
 var net = [];
+var neighborsHistory = [];
 var squareSize = 0;
 var drawingByMoveActivated = false;
 var lastRenderSquare = null;
 var squareTypeToSet = boxType.START;
 var lastRenderPoint = {};
 var mousemoveMode = mousemoveType.DRAWING;
+var displayIteration = 0;
 function Init(canvas){
 	ClearCanvas(canvas);
 	ResetLastRenderSquare();
 }
+
+
+
+
+
+SaveToHistory([0,1,2]);
+SaveToHistory([10,11,12]);
+SaveToHistory([20,21,22]);
+SaveToHistory([30,31,32]);
+SaveToHistory([40,41,42]);
+SaveToHistory([50,51,52]);
+
+
+
+
+
+
+
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! do poprawy
@@ -47,7 +67,10 @@ function GenerateNet(canvas){
 			net.push({
 				x: c*squareSize,
 				y: r*squareSize,
-				type: boxType.NORMAL
+				type: boxType.NORMAL,
+				neihbId: 0,
+				isSearched: false,
+				lastSearched: false
 			})
 		}
 	}
@@ -66,14 +89,37 @@ function ClearCanvas(canvas){
 
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	net.forEach(function(sq){
+		sq.isSearched = false;
+		sq.lastSearched = false;
+	});
 }
 
 function DrawNet(canvas){
 	ClearCanvas(canvas);
+	SetNeighbours(neighborsHistory, displayIteration);
 
 	for (var i=0; i<net.length; i++) {
 		DrawSquare(net[i], canvas);
   	}
+}
+
+function SetNeighbours(neighborsList, iteration){
+	var blockId = 0; 
+	for (var i=0; i<iteration; i++){		
+		var list = neighborsList[i];
+
+		for (var j=0; j<list.length; j++){
+			var square = net[list[j]];
+			square.neihbId = blockId++;
+			square.isSearched = true;
+
+			if (i==iteration-1){
+				square.lastSearched = true;
+			}
+		}
+	}
 }
 
 function IsMouseMoveAcceptable(mouseAction){
@@ -85,9 +131,18 @@ function DrawSquare(squareObj, canvas){
 
 	switch (squareObj.type){
 		case boxType.NORMAL:
-			ctx.fillStyle = "DimGrey";
-			ctx.strokeRect(squareObj.x, squareObj.y, squareSize, squareSize);
-			return;
+			if (squareObj.lastSearched){
+				ctx.fillStyle = "#80bbff";
+			}
+			else if (squareObj.isSearched){ // neighbour
+				ctx.fillStyle = "#dfeeff";
+			}
+			else{
+				ctx.fillStyle = "DimGrey";
+				ctx.strokeRect(squareObj.x, squareObj.y, squareSize, squareSize);
+				return;
+			}
+			break;
 		case boxType.START:
 			ctx.fillStyle = "DarkSeaGreen";
 			break;
@@ -190,9 +245,16 @@ function ChangeSquareType(square) {
 	}
 }
 
-
+function SaveToHistory(list){
+	neighborsHistory.push(list);
+	UpdateView();
+}
 
 // ======== interakcje ===========
+function UpdateView(){
+	$(".slider").attr("max", neighborsHistory.length);
+}
+
 $("canvas").on('click mousemove', function(e){
 	if (!IsMouseMoveAcceptable(e.type)){
 		return;	// drawing by mousemove is not allowed 
@@ -217,18 +279,22 @@ $("canvas").on('mousedown', function(e){
 	var square = GetSquareByCord(e.offsetX, e.offsetY);
 	SetPenOrRubber(square);
 	ResetLastRenderSquare();
-})
+});
 
 $(window).on('mouseup', function(e){
 	drawingByMoveActivated = false;
-})
+});
 
+$(".slider").on('change', function(e){
+	displayIteration = e.target.value;
+	DrawNet(cnv);
+});
 
 $(function(){
 	Init(cnv);
 	GenerateNet(cnv);
 	DrawNet(cnv);	
-})
+});
 
 
 // ======== pathfinding ===========
