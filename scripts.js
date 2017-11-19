@@ -32,12 +32,12 @@ function Init(canvas){
 
 
 
-SaveToHistory([0,1,2]);
-SaveToHistory([10,11,12]);
-SaveToHistory([20,21,22]);
-SaveToHistory([30,31,32]);
-SaveToHistory([40,41,42]);
-SaveToHistory([50,51,52]);
+SaveToHistory([0,1,2], neighborsHistory);
+SaveToHistory([10,11,12], neighborsHistory);
+SaveToHistory([20,21,22], neighborsHistory);
+SaveToHistory([30,31,32], neighborsHistory);
+SaveToHistory([40,41,42], neighborsHistory);
+SaveToHistory([50,51,52], neighborsHistory);
 
 
 
@@ -94,6 +94,8 @@ function ClearCanvas(canvas){
 		sq.isSearched = false;
 		sq.lastSearched = false;
 	});
+
+	ctx.strokeStyle = 'LightGray';
 }
 
 function DrawNet(canvas){
@@ -158,6 +160,18 @@ function DrawSquare(squareObj, canvas){
 	}
 
 	ctx.fillRect(squareObj.x, squareObj.y, squareSize, squareSize);
+	
+	ctx.strokeStyle = 'LightGray';
+	var fillRect = false;
+	ctx.rect(squareObj.x, squareObj.y, squareSize, squareSize);
+	ctx.stroke();
+
+	if (squareObj.isSearched){
+		ctx.font = "16px Arial";
+		ctx.textAlign = "center";
+		ctx.fillStyle = "Gray";
+		ctx.fillText(squareObj.neihbId+1+"",squareObj.x+squareSize/2,squareObj.y+24);
+	}
 }
 
 function GetSquareByCord(x, y){
@@ -245,8 +259,8 @@ function ChangeSquareType(square) {
 	}
 }
 
-function SaveToHistory(list){
-	neighborsHistory.push(list);
+function SaveToHistory(list, neihboursHistoryList){
+	neihboursHistoryList.push(list);
 	UpdateView();
 }
 
@@ -288,6 +302,9 @@ $(window).on('mouseup', function(e){
 $(".slider").on('change', function(e){
 	displayIteration = e.target.value;
 	DrawNet(cnv);
+});
+$(".slider").on('mousemove', function(e){
+	$('#iterationNumber').html(e.target.value);
 });
 
 $(function(){
