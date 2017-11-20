@@ -32,19 +32,6 @@ function Init(canvas){
 
 
 
-SaveToHistory([0,1,2], neighborsHistory);
-SaveToHistory([10,11,12], neighborsHistory);
-SaveToHistory([20,21,22], neighborsHistory);
-SaveToHistory([30,31,32], neighborsHistory);
-SaveToHistory([40,41,42], neighborsHistory);
-SaveToHistory([50,51,52], neighborsHistory);
-
-
-
-
-
-
-
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! do poprawy
@@ -324,27 +311,6 @@ function isOutOfRange(int)
 	return false;
 }
 
-// function getNeighbours(i)
-// {
-// 	var array=[];
-// 	if(i%boxPerRow!=0 && checkIfNotOccupied(i-1))
-// 	{
-// 		array.push(new node(i-1));
-// 	}
-// 	else if(i%boxPerRow!=boxPerRow-1 && checkIfNotOccupied(i+1) )
-// 	{
-// 		array.push(new node(i+1));
-// 	}
-// 	else if(i-boxPerRow>0 && checkIfNotOccupied(i-boxPerRow))
-// 	{
-// 		array.push(new node(i-boxPerRow));
-// 	}
-// 	else if(i+boxPerRow<boxPerRow*rowsCount && checkIfNotOccupied(i+boxPerRow))
-// 	{
-// 		array.push(new node(i+boxPerRow));
-// 	}
-// 	return array;
-// }
 function getNeighbours(i)
 {
 	var array=[];
@@ -418,20 +384,26 @@ function nodeToList(node)
 //					  care of in the future
 //		visited		- already visited nodes
 //		fin			- POPRAWIC
+//	Things to look into:
+//	fin is a variable that's used to go around the foreach statement
+//		for an easier return
+//	history, ithistory and visited have bascially the same function,
+//		these can be narrowed to two
 function BFS_search(start,end)
 {
 	var frontier = [new node(start)];
 	var visited = [new node(start)];
 	var bool = false;
 	var fin;
+	var history = [];
 
 	while(frontier.length>0 && bool==false)
 	{
 		var obj 	= frontier.pop();
-		var list 	= getNeighbours(obj.id);
+		var list 	= getNeighbours(obj.id);	
+		var itHist=[];	
 		list.forEach(function(el)
 		{
-			el.last=obj;
 			if(el.id==end)
 			{
 				bool=true;
@@ -441,10 +413,18 @@ function BFS_search(start,end)
 			}	
 			else if(!includesNode(visited,el))
 			{
+				//
+				itHist.push(el.id);
+				//
 				visited.push(el);
 				frontier.unshift(el);
 			}
 		})
+		//
+		//SaveToHistory(itHist,neighborsHistory)
+		history.push(itHist);
+		//
 	}
-	return nodeToList(fin);
+	// return nodeToList(fin);
+	return [nodeToList(fin),history];
 }
