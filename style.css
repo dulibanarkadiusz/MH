@@ -46,3 +46,13 @@ body{
     background: #4CAF50;
     cursor: pointer;
 }
+
+.btnContainer{
+    width: 30px;
+    display: inline-block;
+}
+
+.sliderContainer{
+    width: 60%;
+    display: inline-block;
+}

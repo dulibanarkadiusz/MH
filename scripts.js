@@ -29,11 +29,6 @@ function Init(canvas){
 }
 
 
-
-
-
-
-
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! do poprawy
 var node = class{
 	constructor(id){this.id=id}
@@ -169,6 +164,16 @@ function GetSquareByCord(x, y){
 	return net[posInList];
 }
 
+function GetFirstIdSquareOfType(netlist, type){
+	for (var i=0; i<netlist.length; i++)
+	{
+		var sq = netlist[i];
+		if (sq.type == type){
+			return i;
+		}
+	};
+}
+
 function SetPenOrRubber(square){
 	if (square.type > boxType.NORMAL){
 		mousemoveMode = mousemoveType.ERASING;
@@ -244,11 +249,24 @@ function ChangeSquareType(square) {
 		}
 		square.type=boxType.NORMAL;
 	}
+
+	OnCanvasClick();
 }
 
-function SaveToHistory(list, neihboursHistoryList){
-	neihboursHistoryList.push(list);
+function OnCanvasClick(){
+	var bfs = BFS_search(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
+	neighborsHistory = bfs[1];
 	UpdateView();
+
+	$(".slider").val(neighborsHistory.length);
+	SetIteration(neighborsHistory.length);
+}
+
+function SetIteration(i){
+	displayIteration = i;
+	$('#iterationNumber').html(displayIteration);
+	$('.slider').val(displayIteration);
+	DrawNet(cnv);
 }
 
 // ======== interakcje ===========
@@ -256,6 +274,7 @@ function UpdateView(){
 	$(".slider").attr("max", neighborsHistory.length);
 }
 
+var timer = null;
 $("canvas").on('click mousemove', function(e){
 	if (!IsMouseMoveAcceptable(e.type)){
 		return;	// drawing by mousemove is not allowed 
@@ -271,7 +290,6 @@ $("canvas").on('click mousemove', function(e){
 
 		lastRenderSquare = square;
 	}
-
 });
 
 $("canvas").on('mousedown', function(e){
@@ -287,11 +305,15 @@ $(window).on('mouseup', function(e){
 });
 
 $(".slider").on('change', function(e){
-	displayIteration = e.target.value;
-	DrawNet(cnv);
+	SetIteration(e.target.value);
 });
-$(".slider").on('mousemove', function(e){
-	$('#iterationNumber').html(e.target.value);
+
+$("#nextIt").on('click',function(e){
+	SetIteration(displayIteration+1);
+});
+
+$("#prevIt").on('click', function(e){
+	SetIteration(displayIteration-1);
 });
 
 $(function(){
@@ -408,7 +430,6 @@ function BFS_search(start,end)
 			{
 				bool=true;
 				fin = el;
-				console.log(fin);
 				return el;
 			}	
 			else if(!includesNode(visited,el))
@@ -426,5 +447,6 @@ function BFS_search(start,end)
 		//
 	}
 	// return nodeToList(fin);
+
 	return [nodeToList(fin),history];
 }
