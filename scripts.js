@@ -23,11 +23,15 @@ var squareTypeToSet = boxType.START;
 var lastRenderPoint = {};
 var mousemoveMode = mousemoveType.DRAWING;
 var displayIteration = 0;
+
 function Init(canvas){
 	ClearCanvas(canvas);
 	ResetLastRenderSquare();
 }
 
+// Simulation
+var ongoingSimulation = false;
+var simSpeed = 50;
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! do poprawy
 var node = class{
@@ -262,6 +266,21 @@ function OnCanvasClick(){
 	SetIteration(neighborsHistory.length);
 }
 
+function playIterations() {
+	var j = 0;
+	var len = neighborsHistory.length;
+	ongoingSimulation = true;
+    var interval = setInterval(function(){ 
+		SetIteration(j);
+		j++;
+		if(j==neighborsHistory.length)
+		{
+			clearInterval(interval);
+			ongoingSimulation=false;
+		}
+	 }, simSpeed);
+}
+
 function SetIteration(i){
 	displayIteration = i;
 	$('#iterationNumber').html(displayIteration);
@@ -315,6 +334,16 @@ $("#nextIt").on('click',function(e){
 $("#prevIt").on('click', function(e){
 	SetIteration(displayIteration-1);
 });
+
+//
+
+$("#buttonPlay").on('click',function(e){
+	if(ongoingSimulation==false){
+		playIterations();
+	}
+});
+
+//
 
 $(function(){
 	Init(cnv);
