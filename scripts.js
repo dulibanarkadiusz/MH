@@ -73,15 +73,12 @@ function SetLastRenderSquare(square){
 function ClearCanvas(canvas){
 	var ctx = canvas.getContext('2d');
 
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	net.forEach(function(sq){
 		sq.isSearched = false;
 		sq.lastSearched = false;
 	});
-
-	ctx.strokeStyle = 'LightGray';
 }
 
 function DrawNet(canvas){
@@ -90,6 +87,13 @@ function DrawNet(canvas){
 
 	for (var i=0; i<net.length; i++) {
 		DrawSquare(net[i], canvas);
+  	}
+
+  	if(GetFirstIdSquareOfType(net, boxType.START) !== undefined && GetFirstIdSquareOfType(net, boxType.END) !== undefined){
+  		$(".slider-box").show("slow");
+  	}
+  	else{
+  		$(".slider-box").hide("slow");
   	}
 }
 
@@ -120,15 +124,15 @@ function DrawSquare(squareObj, canvas){
 	switch (squareObj.type){
 		case boxType.NORMAL:
 			if (squareObj.lastSearched){
-				ctx.fillStyle = "#80bbff";
+				ctx.fillStyle = "#9fddfb";
 			}
 			else if (squareObj.isSearched){ // neighbour
 				ctx.fillStyle = "#dfeeff";
 			}
 			else{
-				ctx.fillStyle = "DimGrey";
-				ctx.strokeRect(squareObj.x, squareObj.y, squareSize, squareSize);
-				return;
+				ctx.fillStyle = "#e0e0e0";
+				//ctx.strokeRect(squareObj.x, squareObj.y, squareSize, squareSize);
+				//return;
 			}
 			break;
 		case boxType.START:
@@ -145,17 +149,12 @@ function DrawSquare(squareObj, canvas){
 			break;
 	}
 
-	ctx.fillRect(squareObj.x, squareObj.y, squareSize, squareSize);
+	ctx.fillRect(squareObj.x, squareObj.y, squareSize-1, squareSize-1);
 	
-	ctx.strokeStyle = 'LightGray';
-	var fillRect = false;
-	ctx.rect(squareObj.x, squareObj.y, squareSize, squareSize);
-	ctx.stroke();
-
 	if (squareObj.isSearched){
 		ctx.font = "16px Arial";
 		ctx.textAlign = "center";
-		ctx.fillStyle = "Gray";
+		ctx.fillStyle = "#656565";
 		ctx.fillText(squareObj.neihbId+1+"",squareObj.x+squareSize/2,squareObj.y+24);
 	}
 }
@@ -282,6 +281,9 @@ function playIterations() {
 }
 
 function SetIteration(i){
+	if (i<0 || i > neighborsHistory.length)
+		return;
+
 	displayIteration = i;
 	$('#iterationNumber').html(displayIteration);
 	$('.slider').val(displayIteration);
@@ -328,7 +330,7 @@ $(".slider").on('change', function(e){
 });
 
 $("#nextIt").on('click',function(e){
-	SetIteration(displayIteration+1);
+	SetIteration(parseInt(displayIteration)+1);
 });
 
 $("#prevIt").on('click', function(e){
