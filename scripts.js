@@ -257,7 +257,7 @@ function ChangeSquareType(square) {
 }
 
 function OnCanvasClick(){
-	var bfs = BFS_search(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
+	var bfs = DFS_search(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
 	neighborsHistory = bfs[1];
 	UpdateView();
 
@@ -474,7 +474,47 @@ function BFS_search(start,end)
 		})
 		//
 		//SaveToHistory(itHist,neighborsHistory)
-		history.push(itHist);
+		if(itHist.length>0)history.push(itHist);
+		//
+	}
+	// return nodeToList(fin);
+
+	return [nodeToList(fin),history];
+}
+
+function DFS_search(start,end)
+{
+	var frontier = [new node(start)];
+	var visited = [new node(start)];
+	var bool = false;
+	var fin;
+	var history = [];
+
+	while(frontier.length>0 && bool==false)
+	{
+		var obj 	= frontier.pop();
+		var list 	= getNeighbours(obj.id);	
+		var itHist=[];	
+		list.forEach(function(el)
+		{
+			if(el.id==end)
+			{
+				bool=true;
+				fin = el;
+				return el;
+			}	
+			else if(!includesNode(visited,el))
+			{
+				//
+				itHist.push(el.id);
+				//
+				visited.push(el);
+				frontier.push(el);
+			}
+		})
+		//
+		//SaveToHistory(itHist,neighborsHistory)
+		if(itHist.length>0)history.push(itHist);
 		//
 	}
 	// return nodeToList(fin);
