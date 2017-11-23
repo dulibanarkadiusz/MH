@@ -9,10 +9,14 @@
 
 	<div id="container">
 		<div class="presenter-box">
-			<canvas id="canvas" width="400" height="400">
+			<canvas class="canvas" id="canvas" width="400" height="400">
 			</canvas>
-
-			<div class="slider-box">
+		</div>
+		<div class="presenter-box">
+			<canvas class="canvas" id="canvas2" width="400" height="400">
+			</canvas>
+		</div>
+					<div class="slider-box">
 				<div class="iteration-box">
 					<span>i = </span><span id="iterationNumber">1</span>
 				</div>
@@ -20,7 +24,7 @@
 					<button id="prevIt"> &laquo; </button>
 				</div>
 				<div class="sliderContainer">
-					<input id="slider1" type="range" min="1" max="100" value="1" class="inline slider">
+					<input id="slider" type="range" min="1" max="100" value="1" class="inline slider">
 				</div>
 				<div class="btnContainer">
 					<button id="nextIt"> &raquo; </button>
@@ -29,7 +33,6 @@
 					<button id="buttonPlay" class="raw-border btn-animate"> Start animacji &#9654; </button>
 				</div>
 			</div>
-		</div>
 	</div>
 
 	<script src="scripts.js"></script>

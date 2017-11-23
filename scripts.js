@@ -1,4 +1,3 @@
-const cnv = document.getElementById('canvas');
 const boxType = {
 	NORMAL : 0,
 	START : 1,
@@ -15,7 +14,6 @@ const rowsCount = 10;
 
 ///////////////////////////////////////////////
 var net = [];
-var neighborsHistory = [];
 var squareSize = 0;
 var drawingByMoveActivated = false;
 var lastRenderSquare = null;
@@ -23,6 +21,23 @@ var squareTypeToSet = boxType.START;
 var lastRenderPoint = {};
 var mousemoveMode = mousemoveType.DRAWING;
 var displayIteration = 0;
+var maxItCount = 0;
+/////////////////////
+var cnvs = [];
+	cnvs.push(
+		{
+			canvas: $("#canvas")[0],
+			history: [],
+			algorithm: BFS_search
+		});
+
+	cnvs.push(
+		{
+			canvas: $("#canvas2")[0],
+			history: [],
+			algorithm: DFS_search
+		});
+///////////////////////
 
 function Init(canvas){
 	ClearCanvas(canvas);
@@ -81,12 +96,12 @@ function ClearCanvas(canvas){
 	});
 }
 
-function DrawNet(canvas){
-	ClearCanvas(canvas);
-	SetNeighbours(neighborsHistory, displayIteration);
+function DrawNet(canvasObj){
+	ClearCanvas(canvasObj.canvas);
+	SetNeighbours(canvasObj.history, displayIteration);
 
 	for (var i=0; i<net.length; i++) {
-		DrawSquare(net[i], canvas);
+		DrawSquare(net[i], canvasObj.canvas);
   	}
 
   	if(GetFirstIdSquareOfType(net, boxType.START) !== undefined && GetFirstIdSquareOfType(net, boxType.END) !== undefined){
@@ -99,6 +114,10 @@ function DrawNet(canvas){
 
 function SetNeighbours(neighborsList, iteration){
 	var blockId = 0; 
+
+	if (iteration > neighborsList.length)
+		iteration = neighborsList.length;
+
 	for (var i=0; i<iteration; i++){		
 		var list = neighborsList[i];
 
@@ -257,22 +276,27 @@ function ChangeSquareType(square) {
 }
 
 function OnCanvasClick(){
-	var bfs = DFS_search(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
-	neighborsHistory = bfs[1];
-	UpdateView();
+	maxItCount = 0
+	cnvs.forEach(function(canv){
+		var result = canv.algorithm(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
+		canv.history = result[1];
 
-	$(".slider").val(neighborsHistory.length);
-	SetIteration(neighborsHistory.length);
+		if (canv.history.length > maxItCount){
+			maxItCount = canv.history.length;
+		}
+	});
+
+	UpdateView();
+	SetIteration(maxItCount);
 }
 
 function playIterations() {
 	var j = 0;
-	var len = neighborsHistory.length;
 	ongoingSimulation = true;
     var interval = setInterval(function(){ 
 		SetIteration(j);
 		j++;
-		if(j==neighborsHistory.length)
+		if(j==maxItCount+1)
 		{
 			clearInterval(interval);
 			ongoingSimulation=false;
@@ -281,18 +305,28 @@ function playIterations() {
 }
 
 function SetIteration(i){
-	if (i<0 || i > neighborsHistory.length)
+	if (i<0 || i > maxItCount)
 		return;
 
 	displayIteration = i;
 	$('#iterationNumber').html(displayIteration);
 	$('.slider').val(displayIteration);
-	DrawNet(cnv);
-}
 
+	cnvs.forEach(function(canv){
+		DrawNet(canv);
+	});
+}
 // ======== interakcje ===========
 function UpdateView(){
-	$(".slider").attr("max", neighborsHistory.length);
+	var max = 0;
+	cnvs.forEach(function(canv){
+		var len = canv.history.length;
+		if (len > max)
+			max = len;
+		
+	});
+
+	$(".slider").attr("max", max);
 }
 
 var timer = null;
@@ -307,7 +341,8 @@ $("canvas").on('click mousemove', function(e){
 
 	if (lastRenderSquare != square) { // dont color the same square twice
 		ChangeSquareType(square);
-		DrawNet(cnv);
+		DrawNet(cnvs[0]);
+		DrawNet(cnvs[1]);
 
 		lastRenderSquare = square;
 	}
@@ -348,9 +383,13 @@ $("#buttonPlay").on('click',function(e){
 //
 
 $(function(){
-	Init(cnv);
-	GenerateNet(cnv);
-	DrawNet(cnv);	
+	Init(cnvs[0].canvas);
+	GenerateNet(cnvs[0].canvas);
+	DrawNet(cnvs[0]);
+
+	Init(cnvs[1].canvas);
+	GenerateNet(cnvs[1].canvas);
+	DrawNet(cnvs[1]);	
 });
 
 
