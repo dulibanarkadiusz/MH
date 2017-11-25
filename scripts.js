@@ -28,13 +28,15 @@ var cnvs = [];
 		{
 			canvas: $("#canvas")[0],
 			history: [],
-			algorithm: BFS_search
+			shortestPath: [],
+			algorithm: BFS_search,
 		});
 
 	cnvs.push(
 		{
 			canvas: $("#canvas2")[0],
 			history: [],
+			shortestPath: [],
 			algorithm: DFS_search
 		});
 ///////////////////////
@@ -93,12 +95,14 @@ function ClearCanvas(canvas){
 	net.forEach(function(sq){
 		sq.isSearched = false;
 		sq.lastSearched = false;
+		sq.isPathElement = false;
 	});
 }
 
 function DrawNet(canvasObj){
 	ClearCanvas(canvasObj.canvas);
 	SetNeighbours(canvasObj.history, displayIteration);
+	SetShortestPath(canvasObj.shortestPath);
 
 	for (var i=0; i<net.length; i++) {
 		DrawSquare(net[i], canvasObj.canvas);
@@ -133,6 +137,14 @@ function SetNeighbours(neighborsList, iteration){
 	}
 }
 
+
+function SetShortestPath(pathSquareList){
+	pathSquareList.forEach(function(sqIndex){
+		net[sqIndex].isPathElement = true;
+	});
+
+}
+
 function IsMouseMoveAcceptable(mouseAction){
 	return (mouseAction != "mousemove" || (drawingByMoveActivated && startPlaced && endPlaced));
 }
@@ -142,7 +154,10 @@ function DrawSquare(squareObj, canvas){
 
 	switch (squareObj.type){
 		case boxType.NORMAL:
-			if (squareObj.lastSearched){
+			if (squareObj.isPathElement){
+				ctx.fillStyle = "#ffff66";
+			}	
+			else if (squareObj.lastSearched){
 				ctx.fillStyle = "#9fddfb";
 			}
 			else if (squareObj.isSearched){ // neighbour
@@ -280,6 +295,7 @@ function OnCanvasClick(){
 	cnvs.forEach(function(canv){
 		var result = canv.algorithm(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
 		canv.history = result[1];
+		canv.shortestPath = result[0];
 
 		if (canv.history.length > maxItCount){
 			maxItCount = canv.history.length;
@@ -496,6 +512,7 @@ function BFS_search(start,end)
 		var itHist=[];	
 		list.forEach(function(el)
 		{
+			el.last = obj;
 			if(el.id==end)
 			{
 				bool=true;
@@ -536,6 +553,7 @@ function DFS_search(start,end)
 		var itHist=[];	
 		list.forEach(function(el)
 		{
+			el.last = obj;
 			if(el.id==end)
 			{
 				bool=true;
