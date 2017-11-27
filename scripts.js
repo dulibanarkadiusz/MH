@@ -29,7 +29,7 @@ var cnvs = [];
 			canvas: $("#canvas")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: BFS_search,
+			algorithm: DFS_search,
 		});
 
 	cnvs.push(
@@ -37,7 +37,7 @@ var cnvs = [];
 			canvas: $("#canvas2")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: DFS_search
+			algorithm: BFS_search
 		});
 ///////////////////////
 
@@ -578,3 +578,116 @@ function DFS_search(start,end)
 
 	return [nodeToList(fin),history];
 }
+
+function heuristicA(a,b)
+{
+	var xa = a%boxPerRow;
+	var xb = b%boxPerRow
+	var ya = Math.floor(a/boxPerRow);
+	var yb = Math.floor(b/boxPerRow);
+	// console.log(" xa ",xa,"\n xb ",xb,"\n ya ",ya,"\n yb ", yb);
+	//return Math.abs(xa-xb)+Math.abs(ya-yb)
+	return Math.pow(xa-xb,2)+Math.pow(ya-yb,2)
+}
+
+function heuristicB(a,b)
+{
+	var xa = a%boxPerRow;
+	var xb = b%boxPerRow
+	var ya = Math.floor(a/boxPerRow);
+	var yb = Math.floor(b/boxPerRow);
+	// console.log(" xa ",xa,"\n xb ",xb,"\n ya ",ya,"\n yb ", yb);
+	return Math.abs(xa-xb)+Math.abs(ya-yb)
+	//return Math.pow(xa-xb,2)+Math.pow(ya-yb,2)
+}
+
+function sortNumber(a,b) {
+    return a[0] - b[0];
+}
+
+function GBF_Search(start,end,H)
+{
+	var frontier = [[0,new node(start)]];
+	var visited = [new node(start)];
+	var bool = false;
+	var fin;
+	var history = [];
+
+	while(frontier.length>0 && bool==false)
+	{
+		frontier.sort(sortNumber);
+		frontier.reverse();
+		// frontier.forEach(function(el){console.log(el)});
+		var obj 	= frontier.pop()[1];
+		// console.log("\n -- \n");
+		// console.log(heuristic(obj.id,end));
+		// console.log("\n\n ### \n\n");
+		var list 	= getNeighbours(obj.id);	
+		var itHist=[];	
+		list.forEach(function(el)
+		{
+			el.last = obj;
+			if(el.id==end)
+			{
+				bool=true;
+				fin = el;
+				return el;
+			}	
+			else if(!includesNode(visited,el))
+			{
+				//
+				itHist.push(el.id);
+				//
+				visited.push(el);
+				frontier.push([H(el.id,end),el]);				
+			}
+		})
+		// frontier.forEach(function(el){console.log(el)});
+		// console.log("\n\n")
+
+		if(itHist.length>0)history.push(itHist);
+		
+	}
+	return [nodeToList(fin),history];
+}
+
+// function Astar_Search(start,end,H)
+// {
+// 	var frontier = [[0,new node(start)]];
+// 	var cost_so_far = {};
+// 	var closed = [];
+// 	var bool = false;
+// 	var fin;
+// 	var history = [];
+
+// 	cost_so_far[obj]=0;
+
+// 	while(frontier.length>0 && bool==false)
+// 	{		
+// 		var obj 	= frontier.pop()[1];
+// 		var list 	= getNeighbours(obj.id);	
+// 		var itHist=[];	
+// 		list.forEach(function(el)
+// 		{
+// 			if(el.id==end)
+// 			{
+// 				bool=true;
+// 				fin = el;
+// 				return el;
+// 			}	
+// 			new_cost = cost_so_far[obj]+1;
+// 			if(cost_so_far.indexOf(el.id) || new_cost < cost_so_far[el.id])
+// 			{
+// 				cost_so_far[el.id]=new_cost;
+// 				priority = new_cost + H(el.id,end);
+// 				frontier.push([1,el]);
+// 				el.last=obj;
+// 				itHist.push(el);
+// 			}
+// 			console.log(obj.id);
+// 		})
+// 		if(itHist.length>0)history.push(itHist);		
+// 	}
+// 	return fin;
+// 	//return [nodeToList(fin),history];
+// }
