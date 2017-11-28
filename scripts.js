@@ -154,7 +154,7 @@ function DrawSquare(squareObj, canvas){
 
 	switch (squareObj.type){
 		case boxType.NORMAL:
-			if (squareObj.isPathElement){
+			if (squareObj.isPathElement && displayIteration == maxItCount){
 				ctx.fillStyle = "#ffff66";
 			}	
 			else if (squareObj.lastSearched){

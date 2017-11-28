@@ -62,6 +62,7 @@ body{
 
 .sliderContainer{
     width: 60%;
+    max-width: 500px;
     padding: 0 10px;
     display: inline-block;
 }
