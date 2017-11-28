@@ -316,8 +316,10 @@ function playIterations() {
 		{
 			clearInterval(interval);
 			ongoingSimulation=false;
+			switchScreenEnabled();
 		}
 	 }, simSpeed);
+
 }
 
 function SetIteration(i){
@@ -347,7 +349,7 @@ function UpdateView(){
 
 var timer = null;
 $("canvas").on('click mousemove', function(e){
-	if (!IsMouseMoveAcceptable(e.type)){
+	if (!IsMouseMoveAcceptable(e.type) || ongoingSimulation){
 		return;	// drawing by mousemove is not allowed 
 	}
 
@@ -365,6 +367,9 @@ $("canvas").on('click mousemove', function(e){
 });
 
 $("canvas").on('mousedown', function(e){
+	if (ongoingSimulation)
+		return;
+
 	drawingByMoveActivated = true;
 
 	var square = GetSquareByCord(e.offsetX, e.offsetY);
@@ -392,6 +397,7 @@ $("#prevIt").on('click', function(e){
 
 $("#buttonPlay").on('click',function(e){
 	if(ongoingSimulation==false){
+		switchScreenEnabled();
 		playIterations();
 	}
 });
@@ -407,6 +413,18 @@ $(function(){
 	GenerateNet(cnvs[1].canvas);
 	DrawNet(cnvs[1]);	
 });
+
+function switchScreenEnabled(){
+	if ($(".disabled").length>0){
+		$("body").removeClass("disabled");
+		$("button").removeAttr("disabled");
+		$("input").removeAttr("disabled")	
+	}else{
+		$("body").addClass("disabled");
+		$("button").attr("disabled", "disabled");
+		$("input").attr("disabled", "disabled");
+	}
+}
 
 
 // ======== pathfinding ===========

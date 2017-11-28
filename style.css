@@ -2,6 +2,20 @@ body{
 	background: #f7f1f1;
 }
 
+#slider{
+    cursor: pointer;
+}
+
+.disabled canvas,
+.disabled input{
+    cursor: not-allowed !important;
+}
+
+.disabled .slider-box button, 
+.disabled .slider-box input{
+    opacity: 0.6;
+}
+
 #container{
 	margin: 0 auto;
 	text-align: center;
@@ -84,6 +98,11 @@ button{
 
 button:hover{
     border-color: #345890;
+}
+
+button:disabled{
+    cursor: not-allowed;
+    border-color: inherit !important;
 }
 
 .btn-animate{
