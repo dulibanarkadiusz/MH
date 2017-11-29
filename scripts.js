@@ -151,6 +151,7 @@ function IsMouseMoveAcceptable(mouseAction){
 	return (mouseAction != "mousemove" || (drawingByMoveActivated && startPlaced && endPlaced));
 }
 
+const fontSize = 160 / rowsCount;
 function DrawSquare(squareObj, canvas){
 	var ctx = canvas.getContext('2d');
 
@@ -188,10 +189,10 @@ function DrawSquare(squareObj, canvas){
 	ctx.fillRect(squareObj.x, squareObj.y, squareSize-1, squareSize-1);
 	
 	if (squareObj.isSearched){
-		ctx.font = "16px Arial";
+		ctx.font = fontSize+"px Arial";
 		ctx.textAlign = "center";
 		ctx.fillStyle = "#656565";
-		ctx.fillText(squareObj.neihbId+1+"",squareObj.x+squareSize/2,squareObj.y+24);
+		ctx.fillText(squareObj.neihbId+1+"",squareObj.x+squareSize/2,squareObj.y+(fontSize*1.5));
 	}
 }
 
