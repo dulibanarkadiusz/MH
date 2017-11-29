@@ -101,8 +101,10 @@ function ClearCanvas(canvas){
 
 function DrawNet(canvasObj){
 	ClearCanvas(canvasObj.canvas);
+
 	SetNeighbours(canvasObj.history, displayIteration);
-	SetShortestPath(canvasObj.shortestPath);
+	SetShortestPath(canvasObj.shortestPath); 
+
 
 	for (var i=0; i<net.length; i++) {
 		DrawSquare(net[i], canvasObj.canvas);
@@ -290,8 +292,32 @@ function ChangeSquareType(square) {
 	OnCanvasClick();
 }
 
+function EraseCanvas(clearAlsoObjects)
+{
+	net.forEach(function(square){
+		square.isSearched = false;
+		square.isPathElement = false;
+
+		if (clearAlsoObjects){
+			square.type = boxType.NORMAL;
+		}
+	});
+
+	cnvs.forEach(function(canv){
+		canv.shortestPath = [];
+	});
+}
+
 function OnCanvasClick(){
 	maxItCount = 0
+
+	if (!startPlaced || !endPlaced){
+		EraseCanvas(false);
+		SetIteration(0);
+		UpdateView();
+		return;
+	}
+
 	cnvs.forEach(function(canv){
 		var result = canv.algorithm(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
 		canv.history = result[1];
@@ -467,6 +493,7 @@ function getNeighbours(i)
 //	Checks if "i" in "net" is occupied by an obstacle
 function checkIfNotOccupied(i)
 {
+	console.log(i);
 	if(!isOutOfRange(i))
 	{
 		if(net[i].type != boxType.OBSTACLE)
