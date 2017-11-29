@@ -299,6 +299,7 @@ function EraseCanvas(clearAlsoObjects)
 		square.isPathElement = false;
 
 		if (clearAlsoObjects){
+			startPlaced = endPlaced = false;
 			square.type = boxType.NORMAL;
 		}
 	});
@@ -419,6 +420,12 @@ $("#prevIt").on('click', function(e){
 	SetIteration(displayIteration-1);
 });
 
+$("#erase").on('click', function(e){
+	EraseCanvas(true);
+	SetIteration(0);
+	UpdateView();
+});
+
 //
 
 $("#buttonPlay").on('click',function(e){
@@ -493,7 +500,6 @@ function getNeighbours(i)
 //	Checks if "i" in "net" is occupied by an obstacle
 function checkIfNotOccupied(i)
 {
-	console.log(i);
 	if(!isOutOfRange(i))
 	{
 		if(net[i].type != boxType.OBSTACLE)
