@@ -23,13 +23,38 @@ var mousemoveMode = mousemoveType.DRAWING;
 var displayIteration = 0;
 var maxItCount = 0;
 /////////////////////
+var algs = [];
+	algs.push({
+			name: "BFS",
+			func: BFS_search,
+			funcParam: null
+		});
+
+	algs.push({
+			name: "DFS",
+			func: DFS_search,
+			funcParam: null
+		});
+
+	algs.push({
+			name: "GBF A",
+			func: GBF_Search,
+			funcParam: heuristicA
+		});
+
+	algs.push({
+			name: "GBF B",
+			func: GBF_Search,
+			funcParam: heuristicB
+		});
+
 var cnvs = [];
 	cnvs.push(
 		{
 			canvas: $("#canvas")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: DFS_search,
+			algorithm: null
 		});
 
 	cnvs.push(
@@ -37,9 +62,21 @@ var cnvs = [];
 			canvas: $("#canvas2")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: BFS_search
+			algorithm: null
 		});
 ///////////////////////
+
+function InitAlgList(){
+	var i = 0;
+	algs.forEach(function (alg){
+		$(".alg-list")
+			.append($("<option></option>")
+			.attr("value", i++)
+			.text(alg.name));
+	});
+
+	
+}
 
 function Init(canvas){
 	ClearCanvas(canvas);
@@ -321,7 +358,13 @@ function OnCanvasClick(){
 	}
 
 	cnvs.forEach(function(canv){
-		var result = canv.algorithm(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
+		var result;
+		if (canv.algorithm.funcParam !== null){
+			result = canv.algorithm.func(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END), canv.algorithm.funcParam);
+		}
+		else{
+			result = canv.algorithm.func(GetFirstIdSquareOfType(net, boxType.START), GetFirstIdSquareOfType(net, boxType.END));
+		}
 		canv.history = result[1];
 		canv.shortestPath = result[0];
 
@@ -436,6 +479,15 @@ $("#buttonPlay").on('click',function(e){
 	}
 });
 
+$("#alg-A").on('change', function(e){
+	cnvs[0].algorithm = algs[e.target.value];
+	OnCanvasClick();
+});
+
+$("#alg-B").on('change', function(e){
+	cnvs[1].algorithm = algs[e.target.value];
+	OnCanvasClick();
+});
 //
 
 $(function(){
@@ -445,7 +497,12 @@ $(function(){
 
 	Init(cnvs[1].canvas);
 	GenerateNet(cnvs[1].canvas);
-	DrawNet(cnvs[1]);	
+	DrawNet(cnvs[1]);
+
+	InitAlgList();
+	$("#alg-A").val(0);
+	$("#alg-B").val(1);
+	$(".alg-list").change();
 });
 
 function switchScreenEnabled(){

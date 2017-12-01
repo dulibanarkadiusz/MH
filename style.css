@@ -109,3 +109,16 @@ button:disabled{
     font-size: 14px;
     margin-bottom: 10px;
 }
+
+select{
+    width: 400px;
+    margin-left: 4px;
+    font-size: 14px;
+    padding: 4px;
+    color: #848484;
+    margin-bottom: 5px;
+}
+
+select:focus{
+    outline: none !important;
+}
