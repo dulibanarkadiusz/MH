@@ -54,7 +54,14 @@ var cnvs = [];
 			canvas: $("#canvas")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: null
+			algorithm: null,
+			neighborsCount: 0,
+			itCount: 0,
+			resultView: {
+				it: $("#result-A .itCount"),
+				neigh: $("#result-A .neighCount"),
+				pathLen: $("#result-A .pathLength")
+			}
 		});
 
 	cnvs.push(
@@ -62,7 +69,14 @@ var cnvs = [];
 			canvas: $("#canvas2")[0],
 			history: [],
 			shortestPath: [],
-			algorithm: null
+			algorithm: null,
+			neighborsCount: 0,
+			itCount: 0,
+			resultView: {
+				it: $("#result-B .itCount"),
+				neigh: $("#result-B .neighCount"),
+				pathLen: $("#result-B .pathLength")
+			}
 		});
 ///////////////////////
 
@@ -136,12 +150,31 @@ function ClearCanvas(canvas){
 	});
 }
 
+function GetMaxIdNeighbour(){
+	var max = 0;
+	net.forEach(function(sq){
+		if (max < sq.neihbId){
+			max = sq.neihbId;
+		}
+	});
+
+	return max;
+}
+
+function DrawResults(canvasObj){
+	$(canvasObj.resultView.it).html(canvasObj.itCount); 
+	$(canvasObj.resultView.neigh).html(canvasObj.neighborsCount); 
+	$(canvasObj.resultView.pathLen).html(canvasObj.shortestPath.length); 
+}
+
 function DrawNet(canvasObj){
 	ClearCanvas(canvasObj.canvas);
 
-	SetNeighbours(canvasObj.history, displayIteration);
-	SetShortestPath(canvasObj.shortestPath); 
-
+	var count = SetNeighbours(canvasObj.history, displayIteration);
+	if (!ongoingSimulation)
+		canvasObj.neighborsCount = count;
+	canvasObj.itCount = canvasObj.history.length;
+	SetShortestPath(canvasObj.shortestPath);
 
 	for (var i=0; i<net.length; i++) {
 		DrawSquare(net[i], canvasObj.canvas);
@@ -149,10 +182,14 @@ function DrawNet(canvasObj){
 
   	if(GetFirstIdSquareOfType(net, boxType.START) !== undefined && GetFirstIdSquareOfType(net, boxType.END) !== undefined){
   		$(".slider-box").show("slow");
+  		$(".result-viewer").fadeIn();
   	}
   	else{
   		$(".slider-box").hide("slow");
+  		$(".result-viewer").fadeOut();
   	}
+
+  	DrawResults(canvasObj);
 }
 
 function SetNeighbours(neighborsList, iteration){
@@ -174,6 +211,8 @@ function SetNeighbours(neighborsList, iteration){
 			}
 		}
 	}
+
+	return blockId;
 }
 
 
@@ -684,7 +723,6 @@ function DFS_search(start,end)
 		//
 	}
 	// return nodeToList(fin);
-
 	return [nodeToList(fin),history];
 }
 

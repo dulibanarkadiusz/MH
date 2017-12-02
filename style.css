@@ -117,8 +117,39 @@ select{
     padding: 4px;
     color: #848484;
     margin-bottom: 5px;
+    border-radius: 3px;
 }
 
 select:focus{
     outline: none !important;
+}
+
+.result-viewer,
+canvas,
+select{
+    box-shadow: 1px 1px 6px #00000042;
+    margin-top: 3px;
+}
+
+.result-viewer{
+    width: 400px;
+    margin: 0 25px;
+    background: #e0e0e0;
+    color: #656565;
+    font-size: 14px;
+    border-radius: 3px;
+    margin-left: 23px;
+    margin-top: 6px;
+    text-shadow: 1px 1px rgb(243, 243, 243);
+    display: none;
+}
+
+.result-viewer td:first-child{
+    text-align: right;
+}
+
+.result-viewer td:nth-child(2){
+    text-align: left;
+    width: 45%;
+    padding-left: 15px;
 }
