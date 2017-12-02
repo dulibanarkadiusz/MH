@@ -8,11 +8,33 @@
 <body>
 
 	<div id="container">
+		<div class="menu">
+			<div class="inline">
+		  		<input type="radio" id="net5" class="check-with-label" name="netSize" value="5"/>
+		  		<label for="net5" class="label-for-check">5x5</label>
+			</div>
+			<div class="inline">
+		  		<input type="radio" id="net7" class="check-with-label" name="netSize" value="7"/>
+		  		<label for="net7" class="label-for-check">7x7</label>
+			</div>
+			<div class="inline">
+		  		<input type="radio" id="net10" class="check-with-label" name="netSize" value="10" checked="checked" />
+		  		<label for="net10" class="label-for-check">10x10</label>
+			</div>
+			<div class="inline">
+		  		<input type="radio" id="net12" class="check-with-label" name="netSize" value="12"/>
+		  		<label for="net12" class="label-for-check">12x12</label>
+			</div>
+			<div class="inline">
+		  		<input type="radio" id="net15" class="check-with-label" name="netSize" value="15"/>
+		  		<label for="net15" class="label-for-check">15x15</label>
+			</div>
+		</div>
 		<div class="presenter-box">
 			<select class="alg-list" id="alg-A">
 			</select>
 			<br>
-			<canvas class="canvas" id="canvas" width="400" height="400">
+			<canvas class="canvas" id="canvas" width="420" height="420">
 			</canvas>
 			<br>
 			<table class="result-viewer" id="result-A">
@@ -34,7 +56,7 @@
 			<select class="alg-list" id="alg-B">
 			</select>
 			<br>
-			<canvas class="canvas" id="canvas2" width="400" height="400">
+			<canvas class="canvas" id="canvas2" width="420" height="420">
 			</canvas>
 			<br>
 			<table class="result-viewer" id="result-B">

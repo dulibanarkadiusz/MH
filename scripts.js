@@ -9,8 +9,8 @@ const mousemoveType = {
 	ERASING : 0,
 	DRAWING : 1
 }
-const boxPerRow = 10; 
-const rowsCount = 10;
+var boxPerRow = 5; 
+var rowsCount = 5;
 
 ///////////////////////////////////////////////
 var net = [];
@@ -227,7 +227,7 @@ function IsMouseMoveAcceptable(mouseAction){
 	return (mouseAction != "mousemove" || (drawingByMoveActivated && startPlaced && endPlaced));
 }
 
-const fontSize = 160 / rowsCount;
+var fontSize = 160 / rowsCount;
 function DrawSquare(squareObj, canvas){
 	var ctx = canvas.getContext('2d');
 
@@ -509,6 +509,23 @@ $("#erase").on('click', function(e){
 	UpdateView();
 });
 
+$("input[type=radio]").on('change', function(e){
+	var netsize = $("input[type=radio][name=netSize]:checked" ).val();
+	rowsCount = parseInt(netsize); 
+	boxPerRow = parseInt(rowsCount);
+	fontSize = 160 / rowsCount;
+
+	EraseCanvas(true);
+	SetIteration(0);
+
+	cnvs.forEach(function(cnv){
+		Init(cnv.canvas);
+		GenerateNet(cnv.canvas);
+		DrawNet(cnv);
+	});
+	UpdateView();
+});
+
 //
 
 $("#buttonPlay").on('click',function(e){
@@ -530,13 +547,11 @@ $("#alg-B").on('change', function(e){
 //
 
 $(function(){
-	Init(cnvs[0].canvas);
-	GenerateNet(cnvs[0].canvas);
-	DrawNet(cnvs[0]);
-
-	Init(cnvs[1].canvas);
-	GenerateNet(cnvs[1].canvas);
-	DrawNet(cnvs[1]);
+	cnvs.forEach(function(cnv){
+		Init(cnv.canvas);
+		GenerateNet(cnv.canvas);
+		DrawNet(cnv);
+	});
 
 	InitAlgList();
 	$("#alg-A").val(0);

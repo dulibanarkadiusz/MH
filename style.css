@@ -16,6 +16,16 @@ body{
     opacity: 0.6;
 }
 
+.menu{
+    overflow: hidden;
+    width: 100%;
+    max-width: 892px;
+    background: #e0e0e0;
+    margin: 10px auto;
+    box-shadow: 1px 1px 6px #00000042;
+    margin-bottom: 10px;
+}
+
 #container{
 	margin: 0 auto;
 	text-align: center;
@@ -23,7 +33,7 @@ body{
 }
 
 .presenter-box{
-	width: 450px;
+	width: 470px;
 	display: inline-block;
 	margin: 0 auto;
 }
@@ -111,7 +121,7 @@ button:disabled{
 }
 
 select{
-    width: 400px;
+    width: 420px;
     margin-left: 4px;
     font-size: 14px;
     padding: 4px;
@@ -132,7 +142,7 @@ select{
 }
 
 .result-viewer{
-    width: 400px;
+    width: 420px;
     margin: 0 25px;
     background: #e0e0e0;
     color: #656565;
@@ -152,4 +162,38 @@ select{
     text-align: left;
     width: 45%;
     padding-left: 15px;
+}
+
+.inline {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    vertical-align: middle;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.inline label{
+    cursor: pointer;
+    padding: 5px;
+    height: 20px;
+    display: block;
+    border: 1px solid #c7c2c2;
+    background: #f1f1f1;
+    color: #7d7d7d;
+    font-size: 16px;
+    color: #797979;
+    width: 70px;
+
+}
+
+.inline input[type="radio"]{
+    display: none;
+    width: 0;
+}
+
+.check-with-label:checked + .label-for-check {
+    font-weight: bold;
+    box-shadow: inset 1px 1px 3px 0px #0000007a;
 }
