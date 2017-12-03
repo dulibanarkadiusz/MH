@@ -9,8 +9,8 @@ const mousemoveType = {
 	ERASING : 0,
 	DRAWING : 1
 }
-var boxPerRow = 5; 
-var rowsCount = 5;
+var boxPerRow = 10; 
+var rowsCount = 10;
 
 ///////////////////////////////////////////////
 var net = [];
@@ -563,11 +563,13 @@ function switchScreenEnabled(){
 	if ($(".disabled").length>0){
 		$("body").removeClass("disabled");
 		$("button").removeAttr("disabled");
-		$("input").removeAttr("disabled")	
+		$("input").removeAttr("disabled");
+		$("select").removeAttr("disabled");	
 	}else{
 		$("body").addClass("disabled");
 		$("button").attr("disabled", "disabled");
 		$("input").attr("disabled", "disabled");
+		$("select").attr("disabled", "disabled");
 	}
 }
 

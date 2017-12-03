@@ -110,7 +110,10 @@ button:hover{
     border-color: #345890;
 }
 
-button:disabled{
+button:disabled,
+select:disabled,
+input:disabled,
+body.disabled .inline label{
     cursor: not-allowed;
     border-color: inherit !important;
 }
