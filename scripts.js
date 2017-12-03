@@ -47,6 +47,16 @@ var algs = [];
 			func: GBF_Search,
 			funcParam: heuristicB
 		});
+	algs.push({
+			name: "A* A",
+			func: Astar_Search,
+			funcParam: heuristicA
+		});
+	algs.push({
+			name: "A* B",
+			func: Astar_Search,
+			funcParam: heuristicB
+		});
 
 var cnvs = [];
 	cnvs.push(
@@ -815,43 +825,46 @@ function GBF_Search(start,end,H)
 	return [nodeToList(fin),history];
 }
 
-// function Astar_Search(start,end,H)
-// {
-// 	var frontier = [[0,new node(start)]];
-// 	var cost_so_far = {};
-// 	var closed = [];
-// 	var bool = false;
-// 	var fin;
-// 	var history = [];
+function Astar_Search(start,end,H)
+{
+	var frontier = [[0,new node(start)]];
+	var cost_so_far = [];
+	var bool = false;
+	var fin;
+	var history = [];
+	var new_cost;
+	// var odd = true;
 
-// 	cost_so_far[obj]=0;
+	cost_so_far[start]=0;
 
-// 	while(frontier.length>0 && bool==false)
-// 	{		
-// 		var obj 	= frontier.pop()[1];
-// 		var list 	= getNeighbours(obj.id);	
-// 		var itHist=[];	
-// 		list.forEach(function(el)
-// 		{
-// 			if(el.id==end)
-// 			{
-// 				bool=true;
-// 				fin = el;
-// 				return el;
-// 			}	
-// 			new_cost = cost_so_far[obj]+1;
-// 			if(cost_so_far.indexOf(el.id) || new_cost < cost_so_far[el.id])
-// 			{
-// 				cost_so_far[el.id]=new_cost;
-// 				priority = new_cost + H(el.id,end);
-// 				frontier.push([1,el]);
-// 				el.last=obj;
-// 				itHist.push(el);
-// 			}
-// 			console.log(obj.id);
-// 		})
-// 		if(itHist.length>0)history.push(itHist);		
-// 	}
-// 	return fin;
-// 	//return [nodeToList(fin),history];
-// }
+	while(frontier.length>0 && bool==false)
+	{			
+		frontier.sort(sortNumber);
+		frontier.reverse();	
+		var obj 	= frontier.pop()[1];
+		var list 	= getNeighbours(obj.id);	
+		var itHist=[];	
+		list.forEach(function(el)
+		{
+
+			if(el.id==end)
+			{
+				el.last=obj;
+				bool=true;
+				fin = el;
+				return el;
+			}	
+			new_cost = cost_so_far[obj.id]+H(obj.id,el.id);
+			if(!cost_so_far[el.id] || new_cost < cost_so_far[el.id])
+			{
+				el.last=obj;
+				cost_so_far[el.id]=new_cost;
+				priority = new_cost + H(el.id,end);
+				frontier.push([priority,el]);
+				itHist.push(el.id);
+			}
+		})
+		if(itHist.length>0)history.push(itHist);		
+	}
+	return [nodeToList(fin),history];
+}
