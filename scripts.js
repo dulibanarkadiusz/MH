@@ -48,12 +48,7 @@ var algs = [];
 			funcParam: heuristicB
 		});
 	algs.push({
-			name: "A* A",
-			func: Astar_Search,
-			funcParam: heuristicA
-		});
-	algs.push({
-			name: "A* B",
+			name: "A*",
 			func: Astar_Search,
 			funcParam: heuristicB
 		});
@@ -775,6 +770,7 @@ function heuristicB(a,b)
 	//return Math.pow(xa-xb,2)+Math.pow(ya-yb,2)
 }
 
+
 function sortNumber(a,b) {
     return a[0] - b[0];
 }
@@ -786,6 +782,7 @@ function GBF_Search(start,end,H)
 	var bool = false;
 	var fin;
 	var history = [];
+	var it = 0 ;
 
 	while(frontier.length>0 && bool==false)
 	{
@@ -800,6 +797,7 @@ function GBF_Search(start,end,H)
 		var itHist=[];	
 		list.forEach(function(el)
 		{
+			it+=0.1;
 			el.last = obj;
 			if(el.id==end)
 			{
@@ -813,9 +811,10 @@ function GBF_Search(start,end,H)
 				itHist.push(el.id);
 				//
 				visited.push(el);
-				frontier.push([H(el.id,end),el]);				
+				frontier.push([H(el.id,end)+it,el]);				
 			}
 		})
+		it=0;
 		// frontier.forEach(function(el){console.log(el)});
 		// console.log("\n\n")
 
@@ -833,7 +832,7 @@ function Astar_Search(start,end,H)
 	var fin;
 	var history = [];
 	var new_cost;
-	// var odd = true;
+	var it=0;
 
 	cost_so_far[start]=0;
 
@@ -844,9 +843,11 @@ function Astar_Search(start,end,H)
 		var obj 	= frontier.pop()[1];
 		var list 	= getNeighbours(obj.id);	
 		var itHist=[];	
+
+		var odd=true;
 		list.forEach(function(el)
 		{
-
+			it++
 			if(el.id==end)
 			{
 				el.last=obj;
@@ -859,7 +860,7 @@ function Astar_Search(start,end,H)
 			{
 				el.last=obj;
 				cost_so_far[el.id]=new_cost;
-				priority = new_cost + H(el.id,end);
+				priority = new_cost + H(el.id,end)-it*0.001;
 				frontier.push([priority,el]);
 				itHist.push(el.id);
 			}
