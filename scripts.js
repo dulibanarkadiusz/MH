@@ -182,7 +182,7 @@ function DrawNet(canvasObj){
 	SetShortestPath(canvasObj.shortestPath);
 
 	for (var i=0; i<net.length; i++) {
-		DrawSquare(net[i], canvasObj.canvas);
+		DrawSquare(net[i], canvasObj);
   	}
 
   	if(GetFirstIdSquareOfType(net, boxType.START) !== undefined && GetFirstIdSquareOfType(net, boxType.END) !== undefined){
@@ -233,12 +233,13 @@ function IsMouseMoveAcceptable(mouseAction){
 }
 
 var fontSize = 160 / rowsCount;
-function DrawSquare(squareObj, canvas){
+function DrawSquare(squareObj, canvasObj){
+	var canvas = canvasObj.canvas;
 	var ctx = canvas.getContext('2d');
 
 	switch (squareObj.type){
 		case boxType.NORMAL:
-			if (squareObj.isPathElement && displayIteration == maxItCount){
+			if (squareObj.isPathElement && displayIteration >= canvasObj.itCount){
 				ctx.fillStyle = "#ffff66";
 			}	
 			else if (squareObj.lastSearched){
