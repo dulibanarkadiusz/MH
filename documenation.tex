@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[T1]{polski}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1.5in]{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor
 \usepackage{graphicx}
 \usepackage{amssymb}
@@ -44,6 +44,8 @@
 
 \newpage
 
+\vspace*{1in}
+
 \section{Temat projektu}
 Tematem projektu jest zaimplementowanie i porównanie kilku przykładowych algorytmów służących do przeszukiwania grafów: przeszukiwanie wszerz (BFS), przeszukiwanie w głąb (DFS), General Best First (GBF) oraz A*. 
 \section{Cel projektu}
@@ -65,6 +67,8 @@ Do uruchomienia aplikacji wystarczy przeglądarka internetowa wspierająca obsł
 		\item lastSearched – czy element występował jako ostatni przy przeszukiwaniu
 	\end{itemize}
 	Do prawidłowego działania algorytmu jest wymagana jedynie zmienna type.  Pozostałe są użyte jedynie w celu wizualizacji wyniku. 
+	
+	\newpage
 	\item Zaimplementowane zostały kolejno wszystkie z algorytmów.
 Procedury BFS{\_}search,  DFS{\_}search jako parametr początkowy przyjmują numer bloku startu oraz numer bloku końca. Procedura GBF{\_}search z kolei wymaga podania dokładnie tych samych parametrów oraz – dodatkowo – referencji do funkcji heurystycznej A lub B. Związane jest to z tym, iż algorytm pozwalamy uruchomić w dwóch konfiguracjach, z różnymi heurystykami. \\
 Jako wynik otrzymywane są dwie listy:
@@ -82,7 +86,6 @@ Za rysowanie jest odpowiedzialna funkcja DrawNet, która rysuje siatkę na mapie
 			\item Zmiana rozmiaru siatki net
 	\end{itemize}
 	\item Powyżej ograniczono się jedynie do wymieniania najważniejszych funkcji – dużą część kodu odgrywają funkcje pomocnicze oraz odpowiadające za interakcję z użytkownikiem aplikacji. 
-	\item Uzyskane wyniki …
 \end{enumerate}
 
 
@@ -143,7 +146,7 @@ Przeszukiwanie wgłąb, algorytm który przeszukuje pola kierujące się w daną
 		\end{itemize}		
 	\end{itemize}
 \end{enumerate}
-
+\newpage
 \subsection{Greedy Best-First Search}
 Przeszukiwanie chciwe, algorytm który wykorzystuje heurystykę do znalezienia najkrótszej drogi w celu przeszukiwania najbardziej obiecujących pól. Pola o największym priorytecie (w przypadku tej implementacji o najmniejszej wartości zmiennej \textit{priority}) są brane wcześniej pod uwagę niż pola o niższym priorytecie. Dzięki temu algorytm kieruje się w stronę celu póki nie napotka przeszkód.
 \begin{enumerate}
@@ -293,7 +296,7 @@ s=39 & s=121 & s=51 & s=39 & s=39\\
 \end{center}
 Znów widoczna jest wada algorytmów typu \textbf{GBF} - póki heurystyka nie napotka przeszkody takiej, która nie zmusza algorytmu do wracania z przeszukiwaniem algorytmy będą znajdować najkrótszą ścieżkę. \\ 
 \textbf{A*} rozwiązuje ten problem robiąc porównania ścieżek prowadzących do danego pola od początku wielokrotnie, zawsze ustalając najkrótszą drogę dojścia do każdego pola.
-
+\newpage
 \subsubsection{Podsumowanie}
 
 \begin{center}
@@ -392,10 +395,6 @@ $|bx-ax|+|by-ay|$
 $(bx-ax)^2+(by-ay)^2$
 \end{center}
 \end{itemize}
-
-
-
-
 
 \end{document}
 
