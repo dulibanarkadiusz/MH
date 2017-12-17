@@ -603,7 +603,7 @@ function getNeighbours(i)
 		if(checkIfNotOccupied(i+1))
 		array.push(new node(i+1));
 	}
-	if(i-boxPerRow>0)
+	if(i-boxPerRow>=0)
 	{
 		if(checkIfNotOccupied(i-boxPerRow))
 		array.push(new node(i-boxPerRow));

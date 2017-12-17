@@ -1,7 +1,11 @@
 \documentclass{article}
-\usepackage{graphicx}
 \usepackage[T1]{polski}
 \usepackage[utf8]{inputenc}
+\usepackage[margin=1.5in]{geometry}
+\usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor
+\usepackage{graphicx}
+\usepackage{amssymb}
+
 \begin{document}
 
 \begin{titlepage}
@@ -80,6 +84,322 @@ Za rysowanie jest odpowiedzialna funkcja DrawNet, która rysuje siatkę na mapie
 	\item Powyżej ograniczono się jedynie do wymieniania najważniejszych funkcji – dużą część kodu odgrywają funkcje pomocnicze oraz odpowiadające za interakcję z użytkownikiem aplikacji. 
 	\item Uzyskane wyniki …
 \end{enumerate}
+
+%#############################################
+
+\newpage
+
+%#############################################
+
+\section{Algorytmy}
+\subsection{Breadth First Search}
+Przeszukiwanie wszerz, algorytm który przeszukuje znajdujące się jak najbliższej pola startowego idący w kolejności dodawania elementów do listy.
+\begin{enumerate}
+\item Zainicjowanie pamięci: stos, odwiedzone
+\item Dodanie punktu początkowego do listy odwiedzonych oraz do stosu
+\item Póki stos nie jest pusty:
+	\begin{itemize}
+	\item pobieranie punktu ze stosu
+	\item znajdowanie jego sąsiadów
+	\item dla każdego z sąsiadów:
+	\begin{itemize}
+		\item jeżeli dany punkt nie znajduje się w liście odwiedzonych:
+			\begin{itemize}
+			\item jeżeli punkt jest końcem:
+				\begin{itemize}
+				\item zwracanie ścieżki
+				\end{itemize}
+			\item w przypadku gdy punkt nie jest na liście odwiedzonych:
+				\begin{itemize}
+				\item dodawanie sąsiada na koniec stosu
+				\item dodawanie sąsiada do listy odwiedzonych				
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}		
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Depth First Search}
+Przeszukiwanie wgłąb, algorytm który przeszukuje pola kierujące się w daną stronę, sprawdzając najmłodsze dodawane pola do listy.
+
+\begin{enumerate}
+\item Zainicjowanie pamięci: stos, odwiedzone
+\item Dodanie punktu początkowego do listy odwiedzonych oraz do stosu
+\item Póki stos nie jest pusty:
+	\begin{itemize}
+	\item pobieranie punktu ze stosu
+	\item znajdowanie jego sąsiadów
+	\item dla każdego z sąsiadów:
+	\begin{itemize}
+		\item jeżeli dany punkt nie znajduje się w liście odwiedzonych:
+			\begin{itemize}
+			\item jeżeli punkt jest końcem:
+				\begin{itemize}
+				\item zwracanie ścieżki
+				\end{itemize}
+			\item w przypadku gdy punkt nie jest na liście odwiedzonych:
+				\begin{itemize}
+				\item dodawanie sąsiada na początek stosu
+				\item dodawanie sąsiada do listy odwiedzonych				
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}		
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Greedy Best-First Search}
+Przeszukiwanie chciwe, algorytm który wykorzystuje heurystykę do znalezienia najkrótszej drogi w celu przeszukiwania najbardziej obiecujących pól. Pola o największym priorytecie (w przypadku tej implementacji o najmniejszej wartości zmiennej \textit{priority}) są brane wcześniej pod uwagę niż pola o niższym priorytecie. Dzięki temu algorytm kieruje się w stronę celu póki nie napotka przeszkód.
+\begin{enumerate}
+\item Zainicjowanie pamięci: kolejka priorytetowa, odwiedzone
+\item Dodanie punktu początkowego do listy odwiedzonych oraz do kolejki
+\item Póki kolejka nie jest pusta:
+	\begin{itemize}
+	\item zdejmowanie punktu z kolejki z najlepszym priorytetem
+	\item znajdowanie jego sąsiadów
+	\item dla każdego z sąsiadów:
+	\begin{itemize}
+		\item jeżeli dany punkt nie znajduje się w liście odwiedzonych:
+			\begin{itemize}
+			\item jeżeli punkt jest końcem:
+				\begin{itemize}
+				\item zwracanie ścieżki
+				\end{itemize}
+			\item w przypadku gdy punkt nie jest na liście odwiedzonych:
+				\begin{itemize}
+				\item dodawanie sąsiada do kolejki, z priorytetem równym heurystyce dystansu do punktu docelowego
+				\item dodawanie sąsiada do listy odwiedzonych				
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}		
+	\end{itemize}
+\end{enumerate}
+
+
+\subsection{A*}
+A gwiazdka, algorytm który jest połączeniem algorytmu Dijkstry i chciwego.  
+\begin{enumerate}
+\item Zainicjowanie pamięci: kolejka, odwiedzone
+\item Dodawanie punktu początkowego do listy odwiedzonych oraz do stosu
+\item Póki kolejka nie jest pusta:
+	\begin{itemize}
+	\item pobieranie punkt z kolejki z najlepszym priorytetem
+	\item nadanie punktowi parametru kosztu - 0
+	\item znajdowanie jego sąsiadów
+	\item dla każdego z sąsiadów:
+	\begin{itemize}
+		\item jeżeli dany punkt nie znajduje się w liście odwiedzonych:
+			\begin{itemize}
+			\item jeżeli punkt jest końcem:
+				\begin{itemize}
+				\item zwracanie ścieżki
+				\end{itemize}
+			\item policzenie wartości nowego kosztu = koszt punktu z którego przybył + heurystyka dystansu pomiędzy znalezionym sąsiadem a punktem z którego przyszedł
+			\item w przypadku gdy punkt nie jest na liście odwiedzonych lub nowy koszt jest mniejszy od parametru kosztu tego punktu:
+				\begin{itemize}
+				\item przypisanie sąsiadowi nowego parametru kosztu
+				\item dodawanie sąsiada do kolejki, z priorytetem równym jego kosztowi + heurystyce od tego punktu do punktu celu
+				\item dodawanie sąsiada do listy odwiedzonych				
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}		
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Porównanie}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& DFS & BFS & GBF & A* \\
+\hline
+zawsze najkrótsza możliwa ścieżka & \cellcolor{red}X & \cellcolor{green}\checkmark & \cellcolor{red}X & \cellcolor{green}\checkmark \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #1}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr.png} &
+\includegraphics[scale=0.15]{images/scr1.png} &
+\includegraphics[scale=0.15]{images/scr2.png} &
+\includegraphics[scale=0.15]{images/scr3.png} &
+\includegraphics[scale=0.15]{images/scr4.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+\cellcolor{red}89 & 53 & \cellcolor{green}17 & 18 & 18 \\
+\cellcolor{red}98 & \cellcolor{red}98 & 34 & \cellcolor{green}33 & 34 \\ 
+\cellcolor{green}19 & \cellcolor{red}55 & \cellcolor{green}19 & \cellcolor{green}19 & \cellcolor{green}19 \\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #2}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr5.png} &
+\includegraphics[scale=0.15]{images/scr6.png} &
+\includegraphics[scale=0.15]{images/scr7.png} &
+\includegraphics[scale=0.15]{images/scr8.png} &
+\includegraphics[scale=0.15]{images/scr9.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+64 & 36 & 21 & 25 & 51 \\
+82 & 59 & 48 & 49 & 84\\
+21 & 37 & 23 & 25 & 21\\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #3}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr10.png} &
+\includegraphics[scale=0.15]{images/scr11.png} &
+\includegraphics[scale=0.15]{images/scr12.png} &
+\includegraphics[scale=0.15]{images/scr13.png} &
+\includegraphics[scale=0.15]{images/scr14.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+179 & 59 & 32 & 51 & 43 \\
+205 & 112 & 60 & 90 & 84\\
+29 & 59 & 29 & 43 & 90\\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #3}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr15.png} &
+\includegraphics[scale=0.15]{images/scr16.png} &
+\includegraphics[scale=0.15]{images/scr17.png} &
+\includegraphics[scale=0.15]{images/scr18.png} &
+\includegraphics[scale=0.15]{images/scr19.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+177 & 61 & 61 & 59 & 127 \\
+203 & 113 & 103 & 113 & 29\\
+27 & 53 & 33 & 29 & 27\\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #3}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr20.png} &
+\includegraphics[scale=0.15]{images/scr21.png} &
+\includegraphics[scale=0.15]{images/scr22.png} &
+\includegraphics[scale=0.15]{images/scr23.png} &
+\includegraphics[scale=0.15]{images/scr24.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+155 & 113 & 108 & 81 & 146 \\
+196 & 189 & 157 & 146 & 22\\
+55 & 115 & 55 & 57 & 55\\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przykład #3}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr25.png} &
+\includegraphics[scale=0.15]{images/scr26.png} &
+\includegraphics[scale=0.15]{images/scr27.png} &
+\includegraphics[scale=0.15]{images/scr28.png} &
+\includegraphics[scale=0.15]{images/scr29.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+123 & 90 & 60 & 60 & 37 \\
+156 & 154 & 101 & 104 & 29\\
+29 & 49 & 29 & 55 & 29\\
+\end{tabular}
+\end{center}
+
+\section{Implementacja}
+Idea algorytmów jest prosta czego nie można powiedzieć o ich implementacji. W celu ułatwienia pracy stworzony został szereg pomocniczych funkcji i klas. 
+\subsection{Elementy pomocnicze}
+\subsubsection{Znajdowanie sąsiadów}
+Funkcja odpowiedzialna za znajdowanie sąsiadów \textit{getNeighbours()} sprawdza czy na czterech polach można utworzyć ścieżkę. Robi to poprzez sprawdzenie czy pole: nad, po lewej, po prawej oraz pod zadanym w argumencie polem znajdują się w obrębie planszy oraz czy nie stoi na nich przeszkoda. Jako, że tablica w której przetrzymywane są dane na ten temat jest jednowymiarowa odbywa się to poprzez dzielenie modulo pozycji pola poprzez szerokość planszy.\\
+Funkcja zwraca listę dostępnych pól.
+\subsubsection{funkcja isOutOfRange()}
+Funkcja sprawdza czy zadany identyfikator pola znajduje się na mapie.
+\subsubsection{funkcja includesNode()}
+Funkcja sprawdza czy w danej liście znajduje się obiekt typu \textit{node}.
+
+\subsubsection{Klasa "node"}
+Korzystając z dobrodziejstw języka \textit{JavaScript} utworzona została pomocnicza klasa \textit{node}, która miała oznaczać przeszukiwane pole. Podstawowymi atrybutami tej klasy są:
+\begin{itemize}
+\item \textbf{id} - oznaczające id danego pola w tablicy \textit{net}
+\item \textbf{last} - będące odnośnikiem do \textit{node'a} z którego ten został wywołany
+\end{itemize}\\
+Klasa ta ułatwia odtwarzanie ścieżki utworzonej poprzez algorytmy.
+
+\subsubsection{funkcja nodeToList()}
+Funkcja ta odpowiedzialna jest za stworzenie listy identyfikatorów pól z listy obiektów typu \textit{node}. W argumencie podawany jest \textit{node}, z którego pobierany jest \textit{id} parametru \textit{last} i dodawany do listy zwrotnej. To samo dzieje się dla obiektu last i tak do końca. \\
+W efekcie funkcja zwraca listę identyfikatorów ścieżki utworzonej z poprzedników \textit{node'a} podanego w argumencie.
+
+\subsubsection{Kolejka priorytetowa}
+Nasza implementacja nie jest do końca kolejką priorytetową tylko ją symuluje. \\
+\begin{enumerate}
+\item Tworzona jest lista \textbf{L}
+\item Pętla:
+	\begin{itemize}
+	\item \textbf{L} jest odwracane
+	\item \textbf{L} jest sortowane po priorytecie
+	\item Operacje:
+		\begin{itemize}
+		\item ...
+		\item dodaj element do \textbf{L} z danym priorytetem
+		\item ...
+		\end{itemize}				
+	\end{itemize}
+\end{enumerate}
+\\
+Lista jest odwracana by obiekty z najniższą liczbą priorytetową, czyli największym priorytecie, zawsze są brane pod uwagę wcześniej. \\
+Początkowy algorytm działał źle gdyż nie brał on pod uwagi wieku dodanych elementów.
+Dlatego wymyśliłem sztuczne obejście, które dodaje wiek elementom:
+\begin{enumerate}
+\item Tworzona jest lista \textbf{L}
+\item \underline{Inicjuj iterator}
+\item Pętla:
+	\begin{itemize}
+	\item \textbf{L} jest odwracane
+	\item \textbf{L} jest sortowane po priorytecie
+	\item Operacje:
+		\begin{itemize}
+		\item \underline{iterator++}
+		\item ...
+		\item dodaj element do \textbf{L} z danym priorytetem \underline{+ iterator*0.001}
+		\item ...
+		\end{itemize}				
+	\end{itemize}
+\end{enumerate}%
+
+\subsection{Algorytmy}
+Wszystkie algorytmy mają wspólne cechy:
+\begin{enumerate}
+	\item każdy algorytm zwraca:
+	\begin{itemize}
+		\item ścieżkę od początku do końca (jeżeli istnieje)
+		\item historię przeszukiwanych pól
+	\end{itemize}
+	\item w argumentach wszystkich funkcji algorytmów podany jest początek i koniec, a w przypadku algorytmu \textbf{GBF} jeszcze typ heurystyki.
+	\item ścieżka jest tworzona poprzez dodawanie do danego node'a parametru last, który ustanawia z którego pola można dojść do niego
+	\item każde odwiedzone pole jest dodawane do historii przeszukiwanych pól
+\end{enumerate}
+
+\subsection{Heurystyki}
+\begin{itemize}
+\item Heurystyka A - dystans Manhattana\\
+\begin{center}
+$|bx-ax|+|by-ay|$
+\end{center}
+\item Heurystyka B - dystans Euklidesa\\
+\begin{center}
+$(bx-ax)^2+(by-ay)^2$
+\end{center}
+\end{itemize}
+
+\section{Podsumowanie}
+?
+
+
+
+
+
+
 
 
 
