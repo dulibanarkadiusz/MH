@@ -90,7 +90,7 @@ Za rysowanie jest odpowiedzialna funkcja DrawNet, która rysuje siatkę na mapie
 
 \section{Algorytmy}
 \subsection{Breadth First Search}
-Przeszukiwanie wszerz, algorytm który przeszukuje znajdujące się jak najbliższej pola startowego idący w kolejności dodawania elementów do listy.
+Przeszukiwanie wszerz, algorytm który wyszukuje znajdujące się pola jak najbliższej pola startowego. Dzięki temu każde nowe dodane pole wie jaka jest najkrótsza droga by do niego dotrzeć. Dzieje się to jednak kosztem dużej ilości iteracji. Algorytm poszukuje na ślepo w swoim najbliższym sąsiedztwie.
 \begin{enumerate}
 \item Zainicjowanie pamięci: stos, odwiedzone
 \item Dodanie punktu początkowego do listy odwiedzonych oraz do stosu
@@ -117,7 +117,7 @@ Przeszukiwanie wszerz, algorytm który przeszukuje znajdujące się jak najbliż
 \end{enumerate}
 
 \subsection{Depth First Search}
-Przeszukiwanie wgłąb, algorytm który przeszukuje pola kierujące się w daną stronę, sprawdzając najmłodsze dodawane pola do listy.
+Przeszukiwanie wgłąb, algorytm który przeszukuje pola kierujące się w daną stronę, sprawdzając najmłodsze dodawane pola do listy. Skutkiem tego algorytm może łatwo ominąć punkt leżący niedaleko od niego i wykonać sporą ilość iteracji zanim na niego trafi.
 
 \begin{enumerate}
 \item Zainicjowanie pamięci: stos, odwiedzone
@@ -173,7 +173,7 @@ Przeszukiwanie chciwe, algorytm który wykorzystuje heurystykę do znalezienia n
 
 
 \subsection{A*}
-A gwiazdka, algorytm który jest połączeniem algorytmu Dijkstry i chciwego.  
+A gwiazdka, algorytm który jest połączeniem algorytmu Dijkstry i chciwego. Wykorzystuje on funkcję kosztu przypisywaną do każdego pola. Algorytm, podobnie jak \textbf{GBF}, kieruje się najkrótszą drogą w stronę celu. Jednak jeżeli trafi na przeszkodę i będzie zmuszony się wrócić będzie on dalej w stanie wyznaczyć najkrótszą możliwą trasę. Dzieje się tak dzięki temu, że przy każdym znajdywaniu sąsiadów algorytm jeżeli uzna, że istnieje krótsza droga dojścia do danego pola nadpisuje ją. Sprawia to iż algorytm staje się bardziej czasochłonny lecz zawsze znajduje najkrótszą ścieżkę.  
 \begin{enumerate}
 \item Zainicjowanie pamięci: kolejka, odwiedzone
 \item Dodawanie punktu początkowego do listy odwiedzonych oraz do stosu
@@ -203,6 +203,13 @@ A gwiazdka, algorytm który jest połączeniem algorytmu Dijkstry i chciwego.
 \end{enumerate}
 
 \subsection{Porównanie}
+
+\begin{itemize}
+\item \textbf{i} - ilość iteracji
+\item \textbf{n} - ilość przeszukanych sąsiadów
+\item \textbf{s} - długość drogi
+\end{itemize}
+
 \subsubsection{Przykład 1}
 \begin{center}
 \begin{tabular}{c c c c c}
@@ -212,9 +219,9 @@ A gwiazdka, algorytm który jest połączeniem algorytmu Dijkstry i chciwego.
 \includegraphics[scale=0.15]{images/scr3.png} &
 \includegraphics[scale=0.15]{images/scr4.png} \\
 BFS & DFS & GBF A & GBF B & A* \\
-89 & 53 & 17 & 18 & 18 \\
-98 & 98 & 34 & 33 & 34 \\ 
-19 & 55 & 19 & 19 & 19 \\
+i=89 & i=53 & i=17 & i=18 & i=18 \\
+n=98 & n=98 & n=34 & n=33 & n=34 \\ 
+s=19 & s=55 & s=19 & s=19 & s=19 \\
 \end{tabular}
 \end{center}
 W tym przykładzie pokazana jest droga nie zakłócana żadnymi przeszkodami. Wszystkie algorytmy poza \textbf{DFS} były w stanie wyznaczyć najkrótszą ścieżkę. Algorytm \textbf{BFS} jednak musiał wykonać dużo iteracji i przeszukać wiele sąsiadów by błądząc trafić do pola końcowego. 
@@ -228,13 +235,13 @@ W tym przykładzie pokazana jest droga nie zakłócana żadnymi przeszkodami. Ws
 \includegraphics[scale=0.15]{images/scr8.png} &
 \includegraphics[scale=0.15]{images/scr9.png} \\
 BFS & DFS & GBF A & GBF B & A* \\
-64 & 36 & 21 & 25 & 51 \\
-82 & 59 & 48 & 49 & 84\\
-21 & 37 & 23 & 25 & 21\\
+i=64 & i=36 & i=21 & i=25 & i=51 \\
+n=82 & n=59 & n=48 & n=49 & n=84\\
+s=21 & s=37 & s=23 & s=25 & s=21\\
 \end{tabular}
 \end{center}
-W tym przykładzie na planszy zostały rozłożone dwie ściany stanowiące potencjalną przeszkodę dla drogi. Żadnemu z algorytmów nie zawsze znajdujących najkrótszą drogę (DFS, GBF) nie był w stanie wyznaczyć najkrótszej ścieżki. Algorytm \textbf{DFS} zgodnie ze swoim założeniem - sprawdza najmłodsze pola dodawane do stosu: najpierw pola w dół, następnie w górę, prawo i dopiero w lewo. Dlatego idąc w górę i ścieżka wyznaczona przez algorytm zatrzymuje się i skręca w prawo. Znowu napotykając przeszkodę, tym razem u dołu, postanawia pójść w prawo. Ale jak tylko jest możliwość znowu usiłuje iść w dół. Ten tok rozumowania sprawia, że ten algorytm poza kilkoma przypadkami nigdy nie znajdzie najkrótszej możliwej drogi. \\
-Algorytm \textbf{GBF} widać z kolei, że posiada problemy gdy należało by wcześniej wykonać ruch skrętu. To znaczy, że algorytm musi się wracać. Szczególnie dobrze ilustrować będą to kolejne przykłady.\\
+Ten przykład pokazuje jak potencjalnie zachowują się algorytmy napotykając przeszkodę w postaci ściany. Żadnemu z algorytmów nie zawsze znajdujących najkrótszą drogę (DFS, GBF) nie był w stanie wyznaczyć najkrótszej ścieżki. Algorytm \textbf{DFS} zgodnie ze swoim założeniem - sprawdza najmłodsze pola dodawane do stosu: najpierw pola w dół, następnie w górę, prawo i dopiero w lewo. Dlatego idąc w górę i ścieżka wyznaczona przez algorytm zatrzymuje się i skręca w prawo. Znowu napotykając przeszkodę, tym razem u dołu, postanawia pójść w prawo. Ale jak tylko jest możliwość znowu usiłuje iść w dół. Ten tok rozumowania sprawia, że ten algorytm poza kilkoma przypadkami nigdy nie znajdzie najkrótszej możliwej drogi. \\
+Widoczny jest również problem algorytmów \textbf{GBF}, które mają problem gdy należy wrócić się z przeszukiwaniem. Szczególnie dobrze ilustrować będą to kolejne przykłady.\\
 
 \subsubsection{Przykład 3}
 \begin{center}
@@ -245,9 +252,9 @@ Algorytm \textbf{GBF} widać z kolei, że posiada problemy gdy należało by wcz
 \includegraphics[scale=0.15]{images/scr13.png} &
 \includegraphics[scale=0.15]{images/scr14.png} \\
 BFS & DFS & GBF A & GBF B & A* \\
-179 & 59 & 32 & 51 & 43 \\
-205 & 112 & 60 & 90 & 84\\
-29 & 59 & 29 & 43 & 29\\
+i=179 & i=59 & i=32 & i=51 & i=43 \\
+n=205 & n=112 & n=60 & n=90 & n=84\\
+s=29 & s=59 & s=29 & s=43 & s=29\\
 \end{tabular}
 \end{center}
 W tym przypadku jeszcze algorytmowi \textbf{GBF A} z heurystyką Euklidesa udaje się otrzymać ścieżkę z najkrótszą drogą przebytą. Dzieję się to dlatego iż przeszkody jedynie przecinają drogę do punktu końcowego wyznaczoną przez heurystykę algorytmu. Gorzej to wygląda w przypadku \textbf{GBF B}, gdzie użyty został dystans Manhattana. Ścieżka zwrócona przez algorytm musi się sporo wrócić.\\
@@ -263,9 +270,9 @@ Bardzo dobrze prezentuje się tu algorytm \textbf{A*}. Widać, że sprawdza on w
 \includegraphics[scale=0.15]{images/scr28.png} &
 \includegraphics[scale=0.15]{images/scr29.png} \\
 BFS & DFS & GBF A & GBF B & A* \\
-123 & 90 & 60 & 60 & 37 \\
-156 & 154 & 101 & 104 & 29\\
-29 & 49 & 29 & 55 & 29\\
+i=123 & i=90 & i=60 & i=60 & i=37 \\
+n=156 & n=154 & n=101 & n=104 & n=29\\
+s=29 & s=49 & s=29 & s=55 & s=29\\
 \end{tabular}
 \end{center}
 Implementacje \textbf{DFS} oraz \textbf{GBF B} znowu błądzą po mapie. Tutaj dobrze widać przewagę \textbf{A*} ponad pozostałymi algorytmami - nie robi on aż tyle zbędnych przeszukiwań i zawsze jest skuteczny.
@@ -279,9 +286,9 @@ Implementacje \textbf{DFS} oraz \textbf{GBF B} znowu błądzą po mapie. Tutaj d
 \includegraphics[scale=0.15]{images/scr34.png} &
 \includegraphics[scale=0.15]{images/scr35.png} \\
 BFS & DFS & GBF A & GBF B & A* \\
-292 & 127 & 74 & 38 & 136 \\
-319 & 149 & 120 & 73 & 261\\
-39 & 121 & 51 & 39 & 39\\
+i=292 & i=127 & i=74 & i=38 & i=136 \\
+n=319 & n=149 & n=120 & n=73 & n=261\\
+s=39 & s=121 & s=51 & s=39 & s=39\\
 \end{tabular}
 \end{center}
 Znów widoczna jest wada algorytmów typu \textbf{GBF} - póki heurystyka nie napotka przeszkody takiej, która nie zmusza algorytmu do wracania z przeszukiwaniem algorytmy będą znajdować najkrótszą ścieżkę. \\ 
