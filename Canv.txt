@@ -14,7 +14,7 @@
 11 59,112,59
 12 32,60,29
 13 51,90,43
-14 43.84,90
+14 43.84,29
 
 15 177,203,27
 16 61,113,53
@@ -26,7 +26,7 @@
 21 113,189,115
 22 108,157,55
 23 81,146,57
-24 146,22,55
+24 146,222,55
 
 25 123,156,29
 26 90,154,49
@@ -34,6 +34,37 @@
 28 60,104,55
 29 37,72,29
 
+
+
+\subsubsection{Przyk³ad #4}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr15.png} &
+\includegraphics[scale=0.15]{images/scr16.png} &
+\includegraphics[scale=0.15]{images/scr17.png} &
+\includegraphics[scale=0.15]{images/scr18.png} &
+\includegraphics[scale=0.15]{images/scr19.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+177 & 61 & 61 & 59 & 127 \\
+203 & 113 & 103 & 113 & 29\\
+27 & 53 & 33 & 29 & 27\\
+\end{tabular}
+\end{center}
+
+\subsubsection{Przyk³ad 4}
+\begin{center}
+\begin{tabular}{c c c c c}
+\includegraphics[scale=0.15]{images/scr20.png} &
+\includegraphics[scale=0.15]{images/scr21.png} &
+\includegraphics[scale=0.15]{images/scr22.png} &
+\includegraphics[scale=0.15]{images/scr23.png} &
+\includegraphics[scale=0.15]{images/scr24.png} \\
+BFS & DFS & GBF A & GBF B & A* \\
+155 & 113 & 108 & 81 & 146 \\
+196 & 189 & 157 & 146 & 222\\
+55 & 115 & 55 & 57 & 55\\
+\end{tabular}
+\end{center}
 
 
 
